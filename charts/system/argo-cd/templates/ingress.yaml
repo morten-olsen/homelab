@@ -1,0 +1,27 @@
+{{- if .Values.hostname }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: "{{ .Release.Name }}-ingress"
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    cert-manager.io/cluster-issuer: "tls-issuer"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argo-cd-argocd-server
+                port:
+                  name: http
+      host: "{{ .Values.hostname }}"
+  tls:
+    - hosts:
+        - "{{ .Values.hostname }}"
+      secretName: "argo-tls-secret"
+{{ end }}

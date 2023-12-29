@@ -1,0 +1,29 @@
+{
+  "github": {
+    "username": "morten-olsen"
+  },
+  "secrets": {
+    "manager": "onepassword",
+    "keys": {
+      "github": {
+        "pat": {
+          "name": "ArgoCD Github Token",
+          "field": "credential",
+          "vault": "Personal"
+        }
+      },
+      "cloudflare": {
+        "apiToken": {
+          "name": "Cloudflare API Token",
+          "field": "credential",
+          "vault": "Home server"
+        },
+        "tunnelSecret": {
+          "name": "CloudFlare Local Management Tunnel",
+          "field": "credential",
+          "vault": "Home server"
+        }
+      }
+    }
+  }
+}

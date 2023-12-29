@@ -1,0 +1,37 @@
+{{- define "mgmt.cloudflared.values" }}
+domain: {{ .Values.mgmt.domain }}
+cloudflare-tunnel:
+  cloudflare:
+    tunnelName: {{ .Values.mgmt.cloudflared.tunnelName }}
+    secretName: {{ .Values.mgmt.cloudflared.secretName }}
+    ingress:
+      - hostname: "portainer.{{ .Values.mgmt.domain }}"
+        service: "https://portainer:9000"
+{{- end }}
+
+{{- if eq .Values.mgmt.cloudflared.enabled true }}
+{{- $value := include "mgmt.cloudflared.values" . | fromYaml }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudflared
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mgmt
+  project: mgmt
+  source:
+    path: charts/mgmt/cloudflared
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ $value | toJson | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}

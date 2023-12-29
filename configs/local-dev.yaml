@@ -1,0 +1,20 @@
+repo: https://github.com/morten-olsen/homelab
+revision: main
+persistValues: true
+email: morten@olsen.pro
+argo:
+  hostname: argo.mgmt.local.olsen.cloud
+mgmt:
+  enabled: true
+  domain: mgmt.local.olsen.cloud
+envs:
+  - name: local
+    domain: local.olsen.cloud
+loadbalancer:
+  enabled: true
+  ipRange: 172.18.255.200-172.18.255.250
+nfs:
+  enabled: false
+  server:
+    host: 127.0.0.1
+    path: /mnt/nfs

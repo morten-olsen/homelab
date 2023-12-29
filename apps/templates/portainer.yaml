@@ -1,0 +1,33 @@
+{{- define "mgmt.portainer.values" }}
+domain: {{ .Values.mgmt.domain }}
+portainer:
+  persistence:
+    existingClaim: portainer-data
+{{- end }}
+
+{{- if eq .Values.mgmt.enabled true }}
+{{- $value := include "mgmt.portainer.values" . | fromYaml }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: portainer
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mgmt
+  project: mgmt
+  source:
+    path: charts/mgmt/portainer
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ $value | toJson | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}

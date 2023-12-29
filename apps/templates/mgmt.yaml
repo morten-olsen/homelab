@@ -1,0 +1,24 @@
+{{- if eq .Values.mgmt.enabled true }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "env-mgmt"
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  project: envs
+  source:
+    path: charts/env
+    repoURL: "{{ $.Values.repo }}"
+    targetRevision: "{{ $.Values.revision }}"
+    helm:
+      values: {{ toJson (dict "namespace" "mgmt" "domain" .Values.mgmt.domain) | quote }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}

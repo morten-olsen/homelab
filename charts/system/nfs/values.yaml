@@ -1,0 +1,11 @@
+nfs-subdir-external-provisioner:
+  nfs:
+    server: not-set
+    path: not-set
+  storageClass:
+    name: persisted
+    provisionerName: k8s-sigs.io/persisted
+    reclaimPolicy: Retain
+    accessModes: ReadWriteMany
+    onDelete: retain
+    pathPattern: "${.PVC.namespace}/${.PVC.name}"

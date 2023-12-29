@@ -1,0 +1,26 @@
+{{- if eq .Values.loadbalancer.enabled true }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb-system
+  project: system
+  source:
+    path: charts/system/metallb
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ .Values.loadbalancer | toJson | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    syncOptions:
+     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+{{ end }}
