@@ -1,0 +1,18 @@
+{{- if eq .Values.project true }}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: "{{ .Values.namespace }}"
+  namespace: argocd
+spec:
+  destinations:
+    - namespace: "{{ .Values.namespace }}"
+      server: '*'
+    - namespace: "argocd"
+      server: '*'
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  sourceRepos:
+    - "*"
+{{- end }}

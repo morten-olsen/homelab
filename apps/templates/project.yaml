@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: system
+  namespace: argocd
+spec:
+  destinations:
+    - namespace: '*'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  sourceRepos:
+    - "{{ .Values.repo }}"
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: envs
+  namespace: argocd
+spec:
+  destinations:
+    - namespace: '!kube-system'
+      server: '*'
+    - namespace: '*'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  sourceRepos:
+    - "{{ .Values.repo }}"
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: mgmt
+  namespace: argocd
+spec:
+  destinations:
+    - namespace: '!kube-system'
+      server: '*'
+    - namespace: '*'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  sourceRepos:
+    - "{{ .Values.repo }}"

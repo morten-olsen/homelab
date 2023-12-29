@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-cd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: system
+  source:
+    path: charts/system/argo-cd
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ toJson (dict "hostname" .Values.argo.hostname) | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    syncOptions:
+     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true

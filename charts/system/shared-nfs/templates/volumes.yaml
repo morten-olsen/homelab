@@ -1,0 +1,42 @@
+{{- range $key, $value := .Values.volumes }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ $value.name }}}
+  labels:
+    storage: {{ $value.name }}
+spec:
+  storageClassName: nfs
+  capacity:
+    storage: 50Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  #storageClassName: slow
+  mountOptions:
+    - hard
+  nfs:
+    path: {{ $value.path }}
+    server: {{ $value.server }}}
+
+---
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $value.name }}
+spec:
+  storageClassName: nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      storage: {{ $value.name }}
+
+---
+{{- end }}

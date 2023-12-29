@@ -1,0 +1,22 @@
+{
+  "packageRules": [
+    {
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "groupName": "non major"
+    },
+    {
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "groupName": "major"
+    }
+  ],
+  "kubernetes": {
+    "fileMatch": [
+      "\\.yaml$"
+    ]
+  }
+}

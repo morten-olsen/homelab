@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.portainer.persistence.existingClaim }}
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ .Values.storageClassName }}
+  resources:
+    requests:
+      storage: 1Gi

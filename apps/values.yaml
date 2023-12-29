@@ -1,0 +1,23 @@
+repo: https://github.com/morten-olsen/homelab
+revision: main
+email: morten@olsen.pro
+argo:
+  hostname: argo.mgmt.local.olsen.cloud
+mgmt:
+  enabled: true
+  domain: mgmt.local.olsen.cloud
+  cloudflared:
+    enabled: true
+    tunnelName: "local mgmt"
+    secretName: "cloudflare-tunnel-secret"
+envs:
+  - name: dev
+    domain: dev.local.olsen.cloud
+loadbalancer:
+  enabled: true
+  ipRange: 172.18.255.200-172.18.255.250
+nfs:
+  enabled: true
+  nfs:
+    server: 192.168.20.106
+    path: /mnt/HDD/Apps/local
