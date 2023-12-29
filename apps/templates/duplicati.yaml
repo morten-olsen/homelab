@@ -1,0 +1,35 @@
+{{- define "mgmt.duplicati.values" }}
+domain: {{ .Values.mgmt.domain }}
+nfs:
+  server: {{ .Values.nfs.nfs.server }}
+  path: {{ .Values.nfs.nfs.path }}
+{{- end }}
+
+{{- if eq .Values.mgmt.enabled true }}
+{{- if eq .Values.mgmt.services.duplicati true }}
+{{- $value := include "mgmt.duplicati.values" . | fromYaml }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: duplicati
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mgmt
+  project: mgmt
+  source:
+    path: charts/mgmt/duplicati
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ $value | toJson | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}
+{{- end }}

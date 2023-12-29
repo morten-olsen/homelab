@@ -1,0 +1,126 @@
+{{- define "system.istio.apps-gateway" }}
+domain: {{ .Values.apps.domain }}
+name: apps-gateway
+{{- end }}
+
+{{- $gateway := include "system.istio.apps-gateway" . | fromYaml }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: apps
+  namespace: argocd
+spec:
+  destinations:
+    - namespace: '!kube-system'
+      server: '*'
+    - namespace: 'apps'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+
+  sourceRepos:
+    - "*"
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio-apps-gateway
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-ingress
+  project: system
+  source:
+    path: charts/system/istio-gateway
+    repoURL: "{{ .Values.repo }}"
+    targetRevision: "{{ .Values.revision }}"
+    helm:
+      values: {{ $gateway | toJson | quote }}
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+    syncOptions:
+     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: apps
+  labels:
+    istio-injection: enabled
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "apps"
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  project: system
+  source:
+    path: charts/system/namespace
+    repoURL: "{{ .Values.repo }}"
+    targetRevision: "{{ .Values.revision }}"
+    helm:
+      values: {{ toJson (dict "domain" .Values.apps.domain) | quote }}
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+    syncOptions:
+     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+
+
+{{- if .Values.apps.volumes }}
+
+---
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "apps-volumes"
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: apps
+  project: system
+  source:
+    path: charts/system/shared-nfs
+    repoURL: "{{ $.Values.repo }}"
+    targetRevision: "{{ $.Values.revision }}"
+    helm:
+      values: {{ toJson (dict "volumes" .Values.apps.volumes) | quote }}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
+
+{{- end }}
+
+---
+

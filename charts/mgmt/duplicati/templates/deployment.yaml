@@ -1,0 +1,63 @@
+{{- define "deployment.volumes"}}
+{{- range $key, $value := .Values.extraNfs }}
+- name: "extra-{{$key}}"
+  persistentVolumeClaim:
+    claimName: "{{$.Release.Name}}-{{$key}}"
+{{- end}}
+{{- end}}
+
+
+
+{{- define "deployment.volumeMounts"}}
+volumeMounts:
+{{- range $key, $value := .Values.extraNfs }}
+  - name: "extra-{{$key}}"
+    mountPath: "/data/{{ $key }}"
+{{- end}}
+{{- end}}
+
+{{- $volumes := include "deployment.volumes" . }}
+{{- $volumeMounts := include "deployment.volumeMounts" . }}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Release.Name }}"
+spec:
+  selector:
+    matchLabels:
+      app: "{{ .Release.Name }}"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - image: lscr.io/linuxserver/duplicati:2.0.7
+          imagePullPolicy: Always
+          name: "{{ .Release.Name }}"
+          env:
+            - name: PUID
+              value: '0'
+            - name: PGID
+              value: '0'
+            - name: TZ
+              value: Europe/Amsterdam
+          ports:
+            - containerPort: 8200
+          volumeMounts:
+            - mountPath: /configs
+              name: data 
+          volumeMounts:
+            - mountPath: /data/apps
+              name: apps
+            {{$volumeMounts | indent 12}}
+      volumes:
+        - name: data 
+          persistentVolumeClaim:
+            claimName: "{{ .Release.Name }}-data"
+        - name: apps
+          persistentVolumeClaim:
+            claimName: "{{ .Release.Name }}-app-data"
+        {{$volumes | indent 10}}

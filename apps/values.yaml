@@ -1,0 +1,38 @@
+repo: https://github.com/morten-olsen/homelab
+revision: main
+argo:
+  subdomain: argo
+mgmt:
+  enabled: true
+  services:
+    netdata: false
+    portainer: true
+    uptime: false
+    duplicati: false
+  domain: mgmt.local.olsen.cloud
+apps:
+  domain: local.olsen.cloud
+  volumes: 
+    movies:
+      server: 192.168.20.106
+      path: /mnt/HDD/Movies
+    tv:
+      server: 192.168.20.106
+      path: /mnt/HDD/TV-Shows
+    music:
+      server: 192.168.20.106
+      path: /mnt/HDD/Music
+    pictures:
+      server: 192.168.20.106
+      path: /mnt/HDD/Pictures
+    books:
+      server: 192.168.20.106
+      path: /mnt/HDD/Books
+loadbalancer:
+  enabled: true
+  ipRange: 172.18.255.200-172.18.255.250
+nfs:
+  enabled: true
+  nfs:
+    server: 192.168.20.106
+    path: /mnt/HDD/Apps/local

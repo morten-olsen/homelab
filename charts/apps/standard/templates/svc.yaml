@@ -1,0 +1,14 @@
+{{- range $key, $value := .Values.ingress }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ $.Release.Name }}-{{ $key }}"
+spec:
+  ports:
+    - port: {{ $value.containerPort }}
+      targetPort: {{ $value.containerPort }}
+      protocol: TCP
+  selector:
+    app: "{{ $.Release.Name }}"
+---
+{{- end}}

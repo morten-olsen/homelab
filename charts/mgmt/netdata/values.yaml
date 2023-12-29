@@ -1,0 +1,4 @@
+subdomain: netdata
+netdata:
+  ingress:
+    enabled: false

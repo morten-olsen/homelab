@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: "{{.Values.name}}"
+spec:
+  selector:
+    app: istio-gateway-controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+      - "{{ .Values.domain }}"
+      - "*.{{ .Values.domain }}"
+    tls:
+      httpsRedirect: true
+  - port:
+      number: 443
+      name: https-443
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: "{{ .Values.name }}"
+    hosts:
+      - "{{ .Values.domain }}"
+      - "*.{{ .Values.domain }}"

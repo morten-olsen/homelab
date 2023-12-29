@@ -1,0 +1,26 @@
+{{- if eq .Values.nfs.enabled true }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nfs-persistent-storage 
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nfs-storage
+  project: system
+  source:
+    path: charts/system/nfs
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ dict "nfs-subdir-external-provisioner" .Values.nfs | toJson | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    syncOptions:
+     - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: true
+{{ end }}

@@ -1,0 +1,6 @@
+subdomain: portainer
+storageClassName: persisted
+portainer:
+  persistence:
+    enabled: true
+    existingClaim: portainer-data

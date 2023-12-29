@@ -1,0 +1,7 @@
+image: null
+env: {}
+volumes: 
+  data: {}
+  shared: {}
+ingress: {}
+storageClassName: persisted

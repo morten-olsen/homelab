@@ -1,0 +1,33 @@
+{{- define "system.argo.values" }}
+hostname: "{{ .Values.argo.subdomain | default "argo" }}.{{ .Values.mgmt.domain }}"
+{{- end }}
+
+{{- $values := include "system.argo.values" . | fromYaml }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-cd
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  project: system
+  source:
+    path: charts/system/argo-cd
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ $values | toJson | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    syncOptions:
+     - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+    automated:
+      prune: true
+      selfHeal: true

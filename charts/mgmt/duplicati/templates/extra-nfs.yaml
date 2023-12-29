@@ -1,0 +1,41 @@
+{{- range $key, $value := .Values.extraNfs }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "{{ .Release.Name }}-{{ $key }}"
+  labels:
+    storage: "{{ .Release.Name }}-{{ $key }}"
+spec:
+  capacity:
+    storage: 50Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-class
+  mountOptions:
+    - hard
+  nfs:
+    path: "{{ $value.path }}"
+    server: "{{ $value.server }}"
+
+---
+
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ .Release.Name }}-{{ $key }}"
+spec:
+  storageClassName: nfs-class
+  accessModes:
+    - "ReadWriteMany"
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      storage: "{{ .Release.Name }}-{{ $key }}"
+
+---
+{{- end }}

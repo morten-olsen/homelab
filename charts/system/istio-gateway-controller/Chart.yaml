@@ -1,0 +1,7 @@
+apiVersion: v2
+name: istio-gateway-controller
+version: 1.0.0
+dependencies:
+  - name: gateway
+    version: 1.20.2
+    repository: https://istio-release.storage.googleapis.com/charts

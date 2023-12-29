@@ -1,0 +1,32 @@
+{{- define "mgmt.netdata.values" }}
+domain: {{ .Values.mgmt.domain }}
+{{- end }}
+
+{{- if eq .Values.mgmt.enabled true }}
+{{- if eq .Values.mgmt.services.netdata true }}
+{{- $value := include "mgmt.netdata.values" . | fromYaml }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: netdata
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mgmt
+  project: mgmt
+  source:
+    path: charts/mgmt/netdata
+    repoURL: "{{ .Values.repo }}"
+    helm:
+      values: {{ $value | toJson | quote }}
+    targetRevision: "{{ .Values.revision }}"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}
+{{- end }}

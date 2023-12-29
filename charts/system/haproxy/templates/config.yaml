@@ -1,0 +1,19 @@
+{{- define "config" -}}
+{{- range $key, $value := .Values.rules -}}
+frontend {{ $key }}
+  mode tcp
+  bind :{{ $value.nodePort }}
+  default_backend {{ $key }}
+
+backend {{ $key }}
+  mode tcp
+  balance leastconn
+  server s1 {{ $value.svc }}.{{ $value.namespace }}.svc.cluster.local:{{ $value.servicePort }}
+{{- end }}
+{{- end }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data: {{ include "config" . | toYaml | trim }} 

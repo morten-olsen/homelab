@@ -1,0 +1,24 @@
+{{- if eq .Values.limits.enabled true }}
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: limit-range
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  limits:
+  - type: {{ .Values.limits.type | default "Container" }}
+    {{- if .Values.limits.default }}
+    default:
+      {{- range $key, $value := .Values.limits.default }}
+      {{ $key }}: {{ $value }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.limits.defaultRequest }}
+    defaultRequest:
+      {{- range $key, $value := .Values.limits.defaultRequest }}
+      {{ $key }}: {{ $value }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+    

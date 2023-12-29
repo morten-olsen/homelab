@@ -1,0 +1,6 @@
+rules:
+  foo:
+    svc: bar
+    namespace: baz
+    nodePort: 80
+    servicePort: 9000

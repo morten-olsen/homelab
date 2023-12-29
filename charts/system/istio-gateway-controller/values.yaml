@@ -1,0 +1,18 @@
+gateway:
+  service:
+    ports:
+      - name: status-port
+        port: 15021
+      - name: tls-istiod
+        port: 15012
+      - name: tls
+        port: 15443
+        nodePort: 31371
+      - name: http2
+        port: 80
+        nodePort: 31381
+        targetPort: 8280
+      - name: https
+        port: 443
+        nodePort: 31391
+        targetPort: 8243

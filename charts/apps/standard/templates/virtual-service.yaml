@@ -1,0 +1,18 @@
+{{- range $key, $value := .Values.ingress }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: "{{ $.Release.Name }}-{{ $key }}"
+spec:
+  hosts:
+  - "{{ $value.subdomain }}.{{ $.Values.domain }}"
+  gateways:
+  - istio-ingress/{{ $.Release.Namespace }}-gateway
+  http:
+  - route:
+    - destination:
+        host: "{{ $.Release.Name }}-{{ $key }}.{{ $.Release.Namespace }}.svc.cluster.local"
+        port:
+          number: {{ $value.containerPort }}
+---
+{{- end }}
