@@ -13,3 +13,7 @@ nodes:
         hostPort: 443
       - containerPort: 31411
         hostPort: 53
+        protocol: TCP
+      - containerPort: 31411
+        hostPort: 53
+        protocol: UDP

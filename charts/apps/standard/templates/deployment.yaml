@@ -38,6 +38,9 @@ ports:
 {{- range $key, $value := .Values.ingress }}
   - containerPort: {{$value.containerPort}}
 {{- end}}
+{{- range $key, $value := .Values.ports}}
+  - containerPort: {{$value.containerPort}}
+{{- end}}
 {{- end}}
 {{- end}}
 

@@ -1,3 +1,18 @@
+{{- define "root.values" }}
+repo: {{ .Values.repo }}
+revision: {{ .Values.revision }}
+mgmt:
+  domain: {{ .Values.mgmt.domain }}
+apps:
+  domain: {{ .Values.apps.domain }}
+nfs:
+  nfs:
+    server: {{ .Values.nfs.nfs.server }}
+    path: {{ .Values.nfs.nfs.path }}
+{{- end }}
+
+{{- $value := include "root.values" . | fromYaml }}
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -14,11 +29,12 @@ spec:
     path: apps
     repoURL: "{{ .Values.repo }}"
     targetRevision: "{{ .Values.revision }}"
-    {{- if .Values.persistValues }}
-    {{- if eq .Values.persistValues true }}
+    {{- if and .Values.persistValues }} eq .Values.persistValues true }}
     helm:
       values: {{ .Values | toJson | quote }}
-    {{- end }}
+    {{- else }}
+    helm:
+      values: {{ $value | toJson | quote }}
     {{- end }}
   syncPolicy:
     automated:

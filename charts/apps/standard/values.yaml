@@ -4,4 +4,5 @@ volumes:
   data: {}
   shared: {}
 ingress: {}
+ports: {}
 storageClassName: persisted
