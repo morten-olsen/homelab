@@ -10,8 +10,7 @@
     {
       "matchUpdateTypes": [
         "major"
-      ],
-      "groupName": "major"
+      ]
     }
   ],
   "kubernetes": {
