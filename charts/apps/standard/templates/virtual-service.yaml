@@ -6,6 +6,7 @@ metadata:
 spec:
   hosts:
   - "{{ $value.subdomain }}.{{ $.Values.domain }}"
+  - "{{ $value.subdomain }}-internal.{{ $.Values.domain }}"
   gateways:
   - istio-ingress/{{ $.Release.Namespace }}-gateway
   http:
