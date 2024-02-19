@@ -9,9 +9,9 @@ mgmt:
     portainer: true
     uptime: false
     duplicati: false
-  domain: mgmt.local.olsen.cloud
+  domain: mgmt.olsen.cloud
 apps:
-  domain: local.olsen.cloud
+  domain: olsen.cloud
   volumes: 
     movies:
       server: 192.168.20.106
@@ -35,4 +35,4 @@ nfs:
   enabled: true
   nfs:
     server: 192.168.20.106
-    path: /mnt/HDD/Apps/local
+    path: /mnt/HDD/Apps/prod
