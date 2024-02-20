@@ -7,7 +7,7 @@ mgmt:
   services:
     netdata: false
     portainer: true
-    uptime: false
+    uptime: true
     duplicati: false
   domain: mgmt.olsen.cloud
 apps:
