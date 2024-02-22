@@ -1,0 +1,15 @@
+{{- define "homelab.port" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .app }}-{{ .name }}"
+spec:
+  type: LoadBalancer
+  ports:
+    - port: {{ .port }}
+      targetPort: {{ .containerPort }}
+      nodePort: {{ .nodePort }}
+      protocol: TCP
+  selector:
+    app: "{{ .app }}"
+{{- end }}

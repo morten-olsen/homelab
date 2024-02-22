@@ -1,0 +1,13 @@
+{{- define "homelab.pvc" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: "{{ .app }}-{{ .name }}"
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: {{ .storageClassName }}
+  resources:
+    requests:
+      storage: 1Gi
+{{- end }}

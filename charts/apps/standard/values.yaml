@@ -1,8 +1,0 @@
-image: null
-env: {}
-volumes: 
-  data: {}
-  shared: {}
-ingress: {}
-ports: {}
-storageClassName: persisted

@@ -1,0 +1,32 @@
+{{- define "homelab.app" -}}
+{{- include "homelab.deployment" . }}
+---
+{{- range $key, $value := .ingress }}
+{{ $value := merge $value (dict
+  "name" $key
+  "namespace" $.namespace
+  "app" $.name
+  "domain" $.domain
+  "gateway" $.gateway
+) }}
+{{ include "homelab.ingress" $value }}
+---
+{{- end }}
+{{- range $key, $value := .ports }}
+{{ $value := merge $value (dict
+  "name" $key
+  "app" $.name
+) }}
+{{ include "homelab.ingress" $value }}
+---
+{{- end }}
+{{- range $key, $value := .volumes.data }}
+{{ $value := merge $value (dict
+  "name" $key
+  "app" $.name
+  "storageClassName" $.storageClassName
+) }}
+{{ include "homelab.pvc" $value }}
+---
+{{- end }}
+{{- end -}}

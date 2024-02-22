@@ -1,0 +1,6 @@
+dependencies:
+- name: homelab
+  repository: file://../libs/homelab
+  version: 0.0.6
+digest: sha256:3ff3a621a7285f7f1cff5a315c342cb65754338d5bc4d2692d252ff448fd64f7
+generated: "2024-04-08T23:43:22.46010307+02:00"
