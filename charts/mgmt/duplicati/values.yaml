@@ -1,3 +1,0 @@
-subdomain: duplicati
-storageClassName: persisted
-extraNfs: {}

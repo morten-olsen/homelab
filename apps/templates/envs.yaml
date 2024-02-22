@@ -1,0 +1,59 @@
+{{- $merged := merge (deepCopy .Values) (deepCopy (default (dict) .Values.global)) -}}
+
+{{- define "envs.values" }}
+name: "{{ .name }}"
+domain: "{{ .values.domain }}"
+storageClassName: "persisted-{{ .name }}"
+gateway: "istio-ingress/{{ .name }}"
+apps:
+  {{ .values.apps | toYaml | nindent 2 }}
+volumes:
+  {{ .values.volumes | toYaml | nindent 2 }}
+"nfs-subdir-external-provisioner":
+  nfs:
+    server: "{{ .merged.storage.nfs.host }}"
+    path: "{{ .merged.storage.nfs.path }}/{{ .merged.name }}/{{ .name }}"
+  storageClass:
+    name: "persisted-{{ .name }}"
+    provisionerName: k8s-sigs.io/persisted
+    reclaimPolicy: Retain
+    accessModes: ReadWriteMany
+    onDelete: retain
+    pathPattern: "${.PVC.namespace}/${.PVC.name}"
+{{- end }}
+
+{{- range $key, $value := $merged.envs }}
+{{- if eq $value.enabled true }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "{{ $key }}"
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: "env-{{ $key }}"
+  project: system
+  source:
+    path: charts/system/env
+    repoURL: "{{ $merged.repo }}"
+    helm:
+      values: {{ include "envs.values" (dict "name" $key "values" $value "merged" $merged) | fromYaml | toJson | quote }}
+    targetRevision: "{{ $merged.revision }}"
+  syncPolicy:
+    syncOptions:
+     - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        istio-injection: enabled
+    automated:
+      prune: true
+      selfHeal: true
+
+---
+
+{{- end }}
+{{- end }}
