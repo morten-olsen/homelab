@@ -1,17 +1,4 @@
-{{- define "root.values" }}
-repo: {{ .Values.repo }}
-revision: {{ .Values.revision }}
-mgmt:
-  domain: {{ .Values.mgmt.domain }}
-apps:
-  domain: {{ .Values.apps.domain }}
-nfs:
-  nfs:
-    server: {{ .Values.nfs.nfs.server }}
-    path: {{ .Values.nfs.nfs.path }}
-{{- end }}
-
-{{- $value := include "root.values" . | fromYaml }}
+{{- $merged := merge (deepCopy .Values) (deepCopy (default (dict) .Values.global)) -}}
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -27,15 +14,10 @@ spec:
   project: system
   source:
     path: apps
-    repoURL: "{{ .Values.repo }}"
-    targetRevision: "{{ .Values.revision }}"
-    {{- if and .Values.persistValues }} eq .Values.persistValues true }}
+    repoURL: "{{ $merged.repo }}"
+    targetRevision: "{{ $merged.revision }}"
     helm:
-      values: {{ .Values | toJson | quote }}
-    {{- else }}
-    helm:
-      values: {{ $value | toJson | quote }}
-    {{- end }}
+      values: {{ dict "global" .Values.global | toJson | quote }}
   syncPolicy:
     automated:
       prune: true

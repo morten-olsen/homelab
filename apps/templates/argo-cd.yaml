@@ -1,8 +1,9 @@
 {{- define "system.argo.values" }}
-hostname: "{{ .Values.argo.subdomain | default "argo" }}.{{ .Values.mgmt.domain }}"
+foo: bar
 {{- end }}
 
-{{- $values := include "system.argo.values" . | fromYaml }}
+{{- $merged := merge (deepCopy .Values) (deepCopy (default (dict) .Values.global)) -}}
+{{- $values := include "system.argo.values" $merged | fromYaml }}
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -18,10 +19,10 @@ spec:
   project: system
   source:
     path: charts/system/argo-cd
-    repoURL: "{{ .Values.repo }}"
+    repoURL: "{{ $merged.repo }}"
     helm:
       values: {{ $values | toJson | quote }}
-    targetRevision: "{{ .Values.revision }}"
+    targetRevision: "{{ $merged.revision }}"
   syncPolicy:
     syncOptions:
      - CreateNamespace=true

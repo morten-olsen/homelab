@@ -1,0 +1,21 @@
+global:
+  name: prod
+  envs:
+    apps:
+      domain: olsen.cloud
+      volumes:
+        movies:
+          server: 192.168.20.106
+          path: /mnt/HDD/Movies
+        tv:
+          server: 192.168.20.106
+          path: /mnt/HDD/TV-Shows
+        music:
+          server: 192.168.20.106
+          path: /mnt/HDD/Music
+        pictures:
+          server: 192.168.20.106
+          path: /mnt/HDD/Pictures
+        books:
+          server: 192.168.20.106
+          path: /mnt/HDD/Books

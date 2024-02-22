@@ -1,38 +1,23 @@
+global: {}
 repo: https://github.com/morten-olsen/homelab
-revision: main
-argo:
-  subdomain: argo
-mgmt:
-  enabled: true
-  services:
-    netdata: false
-    portainer: true
-    uptime: true
-    duplicati: false
-  domain: mgmt.olsen.cloud
-apps:
-  domain: olsen.cloud
-  volumes: 
-    movies:
-      server: 192.168.20.106
-      path: /mnt/HDD/Movies
-    tv:
-      server: 192.168.20.106
-      path: /mnt/HDD/TV-Shows
-    music:
-      server: 192.168.20.106
-      path: /mnt/HDD/Music
-    pictures:
-      server: 192.168.20.106
-      path: /mnt/HDD/Pictures
-    books:
-      server: 192.168.20.106
-      path: /mnt/HDD/Books
+revision: next
+name: local
+envs:
+  mgmt:
+    enabled: true
+    domain: mgmt.local.olsen.cloud
+    apps:
+      mgmt:
+        repo: https://github.com/morten-olsen/homelab-mgmt
+        path: apps
+        revision: main
+        values: {}
+    volumes: {}
+argo: {}
 loadbalancer:
   enabled: true
   ipRange: 172.18.255.200-172.18.255.250
-nfs:
-  enabled: true
+storage:
   nfs:
-    server: 192.168.20.106
-    path: /mnt/HDD/Apps/prod
+    host: 192.168.20.106
+    path: /mnt/HDD/Apps

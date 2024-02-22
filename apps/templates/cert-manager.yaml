@@ -1,3 +1,5 @@
+{{- $merged := merge (deepCopy .Values) (deepCopy (default (dict) .Values.global)) -}}
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -12,8 +14,8 @@ spec:
   project: system
   source:
     path: charts/system/cert-manager
-    repoURL: "{{ .Values.repo }}"
-    targetRevision: "{{ .Values.revision }}"
+    repoURL: "{{ $merged.repo }}"
+    targetRevision: "{{ $merged.revision }}"
   syncPolicy:
     syncOptions:
      - CreateNamespace=true

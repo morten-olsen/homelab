@@ -1,3 +1,5 @@
+{{- $merged := merge (deepCopy .Values) (deepCopy (default (dict) .Values.global)) -}}
+
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -18,8 +20,8 @@ spec:
 
   source:
     path: charts/system/istio
-    repoURL: "{{ .Values.repo }}"
-    targetRevision: "{{ .Values.revision }}"
+    repoURL: "{{ $merged.repo }}"
+    targetRevision: "{{ $merged.revision }}"
   syncPolicy:
     syncOptions:
      - CreateNamespace=true
@@ -43,8 +45,8 @@ spec:
   project: system
   source:
     path: charts/system/istio-gateway-controller
-    repoURL: "{{ .Values.repo }}"
-    targetRevision: "{{ .Values.revision }}"
+    repoURL: "{{ $merged.repo }}"
+    targetRevision: "{{ $merged.revision }}"
   syncPolicy:
     managedNamespaceMetadata:
       labels:

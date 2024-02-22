@@ -1,0 +1,9 @@
+global:
+  name: local
+  revision: next
+  envs:
+    apps:
+      enabled: true
+      domain: local.olsen.cloud
+      apps: {}
+      volumes: {}
