@@ -1,9 +1,7 @@
-{{- $merged := merge (deepCopy .Values) (deepCopy (default (dict) .Values.global)) -}}
-
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
-  name: system
+  name: "{{ .Values.name }}"
   namespace: argocd
 spec:
   destinations:
@@ -13,6 +11,4 @@ spec:
     - group: "*"
       kind: "*"
   sourceRepos:
-    - "{{ $merged.repo }}"
-
----
+    - "*"

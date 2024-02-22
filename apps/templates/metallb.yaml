@@ -1,4 +1,6 @@
-{{- if eq .Values.loadbalancer.enabled true }}
+{{- $merged := merge (deepCopy .Values) (deepCopy (default (dict) .Values.global)) -}}
+
+{{- if eq $merged.loadbalancer.enabled true }}
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -13,14 +15,15 @@ spec:
   project: system
   source:
     path: charts/system/metallb
-    repoURL: "{{ .Values.repo }}"
+    repoURL: "{{ $merged.repo }}"
     helm:
-      values: {{ .Values.loadbalancer | toJson | quote }}
-    targetRevision: "{{ .Values.revision }}"
+      values: {{ $merged.loadbalancer | toJson | quote }}
+    targetRevision: "{{ $merged.revision }}"
   syncPolicy:
     syncOptions:
      - CreateNamespace=true
     automated:
       prune: true
       selfHeal: true
+
 {{ end }}

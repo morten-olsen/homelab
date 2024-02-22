@@ -1,0 +1,34 @@
+{{- define "apps.values" }}
+domain: "{{ .domain }}"
+storageClassName: "persisted-{{ .namespace }}"
+gateway: "istio-ingress/{{ .namespace }}"
+project: "{{ .namespace }}"
+namespace: "{{ .namespace }}"
+name: "{{ .name }}"
+{{- end }}
+
+{{- range $key, $value := .Values.apps }}
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: "{{ $.Release.Name }}-{{ $key }}-root"
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: "{{ $.Values.name }}"
+  project: "{{ $.Values.name }}"
+  source:
+    path: "{{ $value.path }}"
+    repoURL: "{{ $value.repo }}"
+    helm:
+      values: {{ include "apps.values" (dict "domain" $.Values.domain "values" $value "name" $key "namespace" $.Values.name) | fromYaml | toJson | quote }}
+    targetRevision: "{{ $value.revision }}"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+{{- end }}
