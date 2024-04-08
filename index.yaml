@@ -2,6 +2,14 @@ apiVersion: v1
 entries:
   homelab:
   - apiVersion: v2
+    created: "2024-04-08T21:13:38.512710615Z"
+    digest: c12417e2a2045df2547d3308b683ad04c245faf643ddd5313ac1f563b2e91dc5
+    name: homelab
+    type: library
+    urls:
+    - https://github.com/morten-olsen/homelab/releases/download/homelab-0.0.4/homelab-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
     created: "2024-04-08T21:09:07.597294058Z"
     digest: 15e37032c03e27d762b3234b226c9d7fe19816847593a0ac274056b9f485fbce
     name: homelab
@@ -16,4 +24,4 @@ entries:
     urls:
     - https://github.com/morten-olsen/homelab/releases/download/homelab-0.0.2/homelab-0.0.2.tgz
     version: 0.0.2
-generated: "2024-04-08T21:09:07.597303485Z"
+generated: "2024-04-08T21:13:38.512768704Z"
