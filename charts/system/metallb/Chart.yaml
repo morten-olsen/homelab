@@ -3,5 +3,5 @@ name: metallb
 version: 1.0.0
 dependencies:
   - name: metallb
-    version: 4.16.1
+    version: 5.0.3
     repository: oci://registry-1.docker.io/bitnamicharts
