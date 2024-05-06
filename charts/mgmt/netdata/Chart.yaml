@@ -3,5 +3,5 @@ name: netdata
 version: 1.0.0
 dependencies:
   - name: netdata
-    version: 3.7.84
+    version: 3.7.88
     repository: https://netdata.github.io/helmchart/
